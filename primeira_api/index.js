@@ -16,6 +16,25 @@ app.get("/listar", (request, response) => {
     return response.send(data);
 });
 
+app.get("/listar/:id", (request, response) => {
+
+    const { id } = request.params;
+
+    const pessoa = data.filter((item) => {
+        return item.id == id
+    });
+
+    if (pessoa.length == 0) {
+        response.status(400).send({
+            // msg : "Pessoa do código " + id + " não encontrada!"
+            msg: `Pessoa do código ${id} não encontrada!`
+        });
+    }
+
+    response.send(pessoa);
+
+});
+
 app.post("/cadastrar", (request, response) => {
     // const nome = request.body.nome;
     // const cpf = request.body.cpf;
@@ -29,7 +48,7 @@ app.post("/cadastrar", (request, response) => {
     // console.log(status);
 
     if (!cpf) {
-        return response.send("O campo CPF é obrigatorio!");
+        return response.status(300).send("O campo CPF é obrigatorio!");
     }
 
     contador_id++
@@ -41,11 +60,15 @@ app.post("/cadastrar", (request, response) => {
         status
     });
 
-    
-
     return response.send("Pessoa cadastrada com sucesso!");
 });
 
 app.listen(8080, () => {
     console.log("O sevidor está rodando na porta 8080!");
 });
+
+
+// Status  500 - Erro interno
+// Status 200 - Sucesso 
+// Status 400 - Não conseguiu econtrar determinada infromação
+// Status 300 - Validações
