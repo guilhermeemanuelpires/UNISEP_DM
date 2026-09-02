@@ -47,7 +47,9 @@ app.post("/cadastrar", (request, response) => {
     // console.log(cpf);
     // console.log(status);
 
-    if (!cpf) {
+    if (!nome) {
+        return response.status(300).send("O campo NOME é obrigatorio!");
+    } else if (!cpf) {
         return response.status(300).send("O campo CPF é obrigatorio!");
     }
 
@@ -61,6 +63,48 @@ app.post("/cadastrar", (request, response) => {
     });
 
     return response.send("Pessoa cadastrada com sucesso!");
+});
+
+
+app.delete("/deletar/:id", (request, response) => {
+    const { id } = request.params;
+
+    const indice = data.findIndex((item) => {
+        return item.id == id
+    });
+
+    if (indice !== -1) {
+        data.splice(indice, 1);
+    }
+
+    response.send(data);
+});
+
+app.put("/atualizar", (request, response) => {
+    const { id, nome, cpf, status } = request.body;
+
+    if (!id) {
+        response.status(300).send({
+            msg: "O campo id é obrigatorio!"
+        });
+    }
+
+    const indicePessoa = data.findIndex((item) => {
+        return item.id == id;
+    });
+
+    if (indicePessoa == -1) {
+        return response.status(400).send({
+            msg: `O id ${id} não existe!`
+        });
+    }
+
+    data[indicePessoa].nome = nome;
+    data[indicePessoa].cpf = cpf;
+    data[indicePessoa].status = status;
+
+
+    return response.send(data[indicePessoa]);
 });
 
 app.listen(8080, () => {
